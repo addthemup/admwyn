@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { format, parseISO, differenceInSeconds } from "date-fns";
-
+import { motion } from "framer-motion";
+import { Button } from "./ui/button"; // Importing shadcn button
+import GameStats from "./GameStats"; // Import the GameStats component
 
 interface Game {
   gameId: string;
@@ -24,6 +26,7 @@ const Games: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/today_games")
@@ -71,38 +74,69 @@ const Games: React.FC = () => {
     return `${hours}h ${minutes}m`;
   };
 
+  // This handles when a card is clicked
+  const handleCardClick = (gameId: string) => {
+    console.log(`Card clicked: ${gameId}`);
+    setSelectedGameId(gameId);
+  };
+
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-6">
-      {games.map((game) => (
-        <Card key={game.gameId} className="border shadow-md">
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <div className="text-left">
-                <div className="text-lg font-bold">{game.awayTeam.teamTricode}</div>
-                <div className="text-sm">{`${game.awayTeam.wins}-${game.awayTeam.losses}`}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-lg font-bold">{game.homeTeam.teamTricode}</div>
-                <div className="text-sm">{`${game.homeTeam.wins}-${game.homeTeam.losses}`}</div>
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {game.awayTeam.score && game.homeTeam.score ? (
-              <div className="text-center text-xl font-bold">
-                {game.awayTeam.score} - {game.homeTeam.score}
-              </div>
-            ) : (
-              <div className="text-center text-sm">
-                Starts in: <span className="font-semibold">{calculateCountdown(game.gameEt)}</span>
-              </div>
-            )}
-          </CardContent>
-          <CardFooter className="text-center text-xs text-gray-500">
-            {format(parseISO(game.gameEt), "yyyy-MM-dd hh:mm a zzz")}
-          </CardFooter>
-        </Card>
-      ))}
+    <div className="relative p-6">
+      {selectedGameId ? (
+        // Render the GameStats component when a game is selected
+        <GameStats gameId={selectedGameId} />
+      ) : (
+        <motion.div
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 transition-all duration-500"
+        >
+          {games.map((game) => (
+            <motion.div
+              key={game.gameId}
+              layout
+              initial={{ opacity: 1 }}
+              animate={
+                selectedGameId
+                  ? game.gameId === selectedGameId
+                    ? { scale: 1.2, x: 0, opacity: 1 }
+                    : { x: 1000, opacity: 0 }
+                  : { scale: 1, x: 0, opacity: 1 }
+              }
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Card className="border shadow-md">
+                <CardHeader>
+                  <CardTitle className="flex justify-between items-center">
+                    <div className="text-left">
+                      <div className="text-lg font-bold">{game.awayTeam.teamTricode}</div>
+                      <div className="text-sm">{`${game.awayTeam.wins}-${game.awayTeam.losses}`}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold">{game.homeTeam.teamTricode}</div>
+                      <div className="text-sm">{`${game.homeTeam.wins}-${game.homeTeam.losses}`}</div>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {game.awayTeam.score && game.homeTeam.score ? (
+                    <div className="text-center text-xl font-bold">
+                      {game.awayTeam.score} - {game.homeTeam.score}
+                    </div>
+                  ) : (
+                    <div className="text-center text-sm">
+                      Starts in: <span className="font-semibold">{calculateCountdown(game.gameEt)}</span>
+                    </div>
+                  )}
+                </CardContent>
+                <CardFooter className="flex justify-center">
+                  <Button onClick={() => handleCardClick(game.gameId)} variant="outline">
+                    View Game Details
+                  </Button>
+                </CardFooter>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </div>
   );
 };
