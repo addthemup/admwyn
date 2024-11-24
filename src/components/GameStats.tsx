@@ -28,7 +28,11 @@ const GameStats: React.FC<GameStatsProps> = ({ gameId }) => {
         return response.json();
       })
       .then((data) => {
-        setStats(data.stats || []);
+        console.log("Fetched game stats data:", data); // Debugging line
+
+        // Update to properly extract the data
+        const statsData = data.stats || []; // Adjust this line based on the response structure
+        setStats(statsData);
         setLoading(false);
       })
       .catch((err) => {
