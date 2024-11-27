@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import BoxReveal from "./ui/box-reveal";
 import Games from "./Games";
 import { motion, AnimatePresence } from "framer-motion";
+import { GameDatePicker } from "./GameDatePicker";
 
 export function Basketball() {
   const [showGames, setShowGames] = useState(false);
@@ -47,11 +48,16 @@ export function Basketball() {
         </BoxReveal>
       </div>
 
-      {/* Right Section: Games with AnimatePresence */}
+      {/* Right Section: GameDatePicker and Games with AnimatePresence */}
       <div
         className="w-full md:w-[500px] space-y-6"
         style={{ minHeight: "600px", maxHeight: "600px", transform: "translateY(-50px)" }}
       >
+        <div className="flex justify-end">
+          {/* Date Picker */}
+          <GameDatePicker />
+        </div>
+
         <AnimatePresence>
           {showGames && (
             <motion.div
