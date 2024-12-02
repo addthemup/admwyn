@@ -24,3 +24,10 @@ dist-ssr
 *.sw?
 
 venv/
+<<<<<<< HEAD
+=======
+env/
+ENV/
+.venv/
+.ENV/
+>>>>>>> 49966a52dbd262c46ab9854c985545f921c00628

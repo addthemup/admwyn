@@ -1,108 +1,109 @@
-import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
-import { format, parseISO, differenceInSeconds } from "date-fns";
-
-
-interface Game {
-  gameId: string;
-  awayTeam: {
-    teamTricode: string;
-    wins: number;
-    losses: number;
-    score: number | null;
-  };
-  homeTeam: {
-    teamTricode: string;
-    wins: number;
-    losses: number;
-    score: number | null;
-  };
-  gameEt: string;
-}
+import React, { useEffect, useState, useRef } from "react";
+import GameList from "./GameList";
+import { parseISO, differenceInSeconds } from "date-fns";
 
 const Games: React.FC = () => {
-  const [games, setGames] = useState<Game[]>([]);
+  const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [apiStatuses, setApiStatuses] = useState<{ [key: string]: string }>({});
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const COLUMNS_DISPLAYED = 3;
+  const ROWS_DISPLAYED = 2;
+  const GAMES_PER_PAGE = COLUMNS_DISPLAYED * ROWS_DISPLAYED;
+
+  const statsFetchedRef = useRef(false);
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/today_games")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch NBA games");
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch today's games");
         }
-        return response.json();
+        return res.json();
       })
       .then((data) => {
-        const gamesData = data.full_json || [];
-        setGames(gamesData);
+        setGames(data.full_json || []);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching games:", err);
+        console.error("Error fetching games:", err.message);
         setError(err.message);
         setLoading(false);
       });
   }, []);
 
-  if (loading) {
-    return <p>Loading games...</p>;
-  }
+  useEffect(() => {
+    if (games.length > 0 && !statsFetchedRef.current) {
+      statsFetchedRef.current = true;
 
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+      const fetchGameStats = async () => {
+        const statuses: { [key: string]: string } = {};
 
-  if (games.length === 0) {
-    return <p>No games scheduled for today.</p>;
-  }
+        await Promise.all(
+          games.map(async (game) => {
+            try {
+              const response = await fetch(`http://127.0.0.1:5000/api/game_stats/${game.gameId}`);
+              if (!response.ok) {
+                throw new Error(`Failed to fetch stats for game ${game.gameId}`);
+              }
+              const data = await response.json();
 
-  const calculateCountdown = (gameEt: string): string => {
+              // Check if the game is usable
+              const allPossessionsZero = data.every((player: any) => player.possessions === 0);
+              if (allPossessionsZero) {
+                statuses[game.gameId] = "not-usable";
+              } else {
+                statuses[game.gameId] = "usable";
+              }
+            } catch (error) {
+              console.error(`Error fetching stats for game ${game.gameId}:`, error.message);
+              statuses[game.gameId] = "error";
+            }
+          })
+        );
+
+        setApiStatuses(statuses);
+      };
+
+      fetchGameStats();
+    }
+  }, [games]);
+
+  const calculateCountdown = (gameEt: string) => {
     const now = new Date();
     const gameTime = parseISO(gameEt);
     const seconds = differenceInSeconds(gameTime, now);
-
-    if (seconds <= 0) {
-      return "Game is starting soon!";
-    }
-
+    if (seconds <= 0) return "Game is starting soon!";
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${hours}h ${minutes}m`;
   };
 
+  const handleNext = () => setCurrentIndex((prev) => prev + 1);
+  const handlePrevious = () => setCurrentIndex((prev) => Math.max(0, prev - 1));
+
+  const startIndex = currentIndex * GAMES_PER_PAGE;
+  const displayedGames = games.slice(startIndex, startIndex + GAMES_PER_PAGE);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  console.log("Rendering GameList. Games:", games);
+  console.log("API Statuses:", apiStatuses);
+
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-6">
-      {games.map((game) => (
-        <Card key={game.gameId} className="border shadow-md">
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <div className="text-left">
-                <div className="text-lg font-bold">{game.awayTeam.teamTricode}</div>
-                <div className="text-sm">{`${game.awayTeam.wins}-${game.awayTeam.losses}`}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-lg font-bold">{game.homeTeam.teamTricode}</div>
-                <div className="text-sm">{`${game.homeTeam.wins}-${game.homeTeam.losses}`}</div>
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {game.awayTeam.score && game.homeTeam.score ? (
-              <div className="text-center text-xl font-bold">
-                {game.awayTeam.score} - {game.homeTeam.score}
-              </div>
-            ) : (
-              <div className="text-center text-sm">
-                Starts in: <span className="font-semibold">{calculateCountdown(game.gameEt)}</span>
-              </div>
-            )}
-          </CardContent>
-          <CardFooter className="text-center text-xs text-gray-500">
-            {format(parseISO(game.gameEt), "yyyy-MM-dd hh:mm a zzz")}
-          </CardFooter>
-        </Card>
-      ))}
+    <div>
+      <GameList
+        games={displayedGames}
+        calculateCountdown={calculateCountdown}
+        apiStatuses={apiStatuses}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        canGoNext={(currentIndex + 1) * GAMES_PER_PAGE < games.length}
+        canGoPrevious={currentIndex > 0}
+      />
     </div>
   );
 };

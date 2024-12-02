@@ -1,8 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import BoxReveal from "./ui/box-reveal";
 import Games from "./Games";
 import { motion, AnimatePresence } from "framer-motion";
+import { GameDatePicker } from "./GameDatePicker";
 
 export function Basketball() {
   const [showGames, setShowGames] = useState(false);
@@ -12,9 +13,12 @@ export function Basketball() {
   };
 
   return (
-    <div className="relative flex flex-col md:flex-row size-full max-w-full items-start md:items-center justify-between overflow-hidden pt-8 text-black dark:text-white p-6 space-y-8 md:space-y-0 md:space-x-8">
+    <div className="relative flex flex-col md:flex-row size-full max-w-[1200px] mx-auto items-start md:items-center justify-between overflow-hidden pt-8 text-black dark:text-white p-6 space-y-8 md:space-y-0 md:space-x-8">
       {/* Left Section: Text */}
-      <div className="md:w-1/2 space-y-8">
+      <div
+        className="w-full md:w-[500px] space-y-6"
+        style={{ minHeight: "600px", maxHeight: "600px" }}
+      >
         <BoxReveal boxColor={"#5046e6"} duration={0.5}>
           <p className="text-[2rem] font-semibold">
             Growing up, I ate/slept/breathed basketball.
@@ -39,20 +43,30 @@ export function Basketball() {
 
         <BoxReveal boxColor={"#5046e6"} duration={0.5}>
           <Button className="mt-[1.6rem] bg-[#5046e6]" onClick={handleButtonClick}>
-            Explore Basketball Stats
+            {showGames ? "Hide Basketball Stats" : "Explore Basketball Stats"}
           </Button>
         </BoxReveal>
       </div>
 
-      {/* Right Section: Games with AnimatePresence */}
-      <div className="md:w-1/2 space-y-4">
+      {/* Right Section: GameDatePicker and Games with AnimatePresence */}
+      <div
+        className="w-full md:w-[500px] space-y-6"
+        style={{ minHeight: "600px", maxHeight: "600px", transform: "translateY(-50px)" }}
+      >
+        <div className="flex justify-end">
+          {/* Date Picker */}
+          <GameDatePicker />
+        </div>
+
         <AnimatePresence>
           {showGames && (
             <motion.div
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              transition={{ type: "spring", stiffness: 20000, damping: 20 }}
+              className="w-full h-full"
+              style={{ minHeight: "600px", maxHeight: "600px" }}
             >
               <Games />
             </motion.div>
