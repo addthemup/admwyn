@@ -1,0 +1,41 @@
+<svg xml:space="preserve" style="max-height: 500px" viewBox="478.4313725490196 533.12 445.09803921568624 364.56" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_8" version="1.1" width="445.09803921568624" height="364.56">
+  <style type="text/css">
+    .st1{fill:#32572A;}
+    .st2{fill:#F19E57;}
+    .st3{fill:#FFFAF1;}
+    .st4{fill:#F19E57;stroke:#FFFFFF;stroke-width:3.8833;stroke-miterlimit:10;}
+    .st5{fill:#F19E57;stroke:#FFFFFF;stroke-width:2.9706;stroke-miterlimit:10;}
+  </style>
+  <g>
+    <g>
+      <path d="M865.6,711.5c0-91.5-74.2-165.7-165.7-165.7S534.1,620,534.1,711.5h-1l83.6,83.8l83.6,83.8l83.6-83.8 l83.6-83.8H865.6z" class="st1"/>
+      <rect height="164" width="164" class="st2" transform="matrix(0.7071 0.7071 -0.7071 0.7071 717.9506 -282.3608)" y="643.4" x="617.8"/>
+      <rect height="27.5" width="27.5" class="st3" transform="matrix(0.7071 0.7071 -0.7071 0.7071 687.875 -206.3811)" y="713.4" x="579.3"/>
+      <rect height="27.5" width="27.5" class="st3" transform="matrix(0.7071 0.7071 -0.7071 0.7071 750.5643 -357.7264)" y="713.4" x="793.3"/>
+      <rect height="27.5" width="27.5" class="st3" transform="matrix(0.7071 0.7071 -0.7071 0.7071 643.3926 -313.2438)" y="606.3" x="686"/>
+      <circle r="34" cy="850.1" cx="699.8" class="st2"/>
+      <polygon points="717.5,846.7 717.5,827.5 681.5,827.5 681.5,846.7 681.5,846.7 690.5,853.2 699.5,859.6 708.5,853.2 717.5,846.7" class="st3"/>
+    </g>
+    <g>
+      <rect height="213.6" width="213.6" class="st1" transform="matrix(0.7071 0.7071 -0.7071 0.7071 384.5599 -420.8264)" y="147" x="593.4"/>
+      <rect height="179.3" width="179.3" class="st2" transform="matrix(0.7071 0.7071 -0.7071 0.7071 384.5599 -420.8264)" y="164.2" x="610.6"/>
+      <rect height="30.1" width="30.1" class="st3" transform="matrix(0.7071 0.7071 -0.7071 0.7071 351.6921 -337.7928)" y="240.6" x="568.5"/>
+      <rect height="30.1" width="30.1" class="st3" transform="matrix(0.7071 0.7071 -0.7071 0.7071 420.2014 -503.1888)" y="240.6" x="802.5"/>
+      <rect height="30.1" width="30.1" class="st3" transform="matrix(0.7071 0.7071 -0.7071 0.7071 303.0801 -454.5764)" y="123.5" x="685.2"/>
+      <circle r="37.2" cy="390" cx="700.3" class="st2"/>
+      <polygon points="680.3,365.4 680.3,386.3 680.1,386.3 689.9,393.4 699.8,400.4 709.7,393.4 719.5,386.3 719.6,386.3 719.6,365.4" class="st3"/>
+    </g>
+    <g>
+      <rect height="242" width="242" class="st2" transform="matrix(0.7071 0.7071 -0.7071 0.7071 262.1903 -103.0772)" y="144" x="134.5"/>
+      <rect height="217.4" width="217.4" class="st1" transform="matrix(0.7071 0.7071 -0.7071 0.7071 262.1903 -103.0772)" y="156.3" x="146.8"/>
+      <path d="M255.5,132l-13.4-13.4l7.6-5.8c3.2-3.2,8.4-3.2,11.5,0l7.6,5.8L255.5,132z" class="st3"/>
+      <path d="M255.5,400l-13.4,13.4l7.6,5.8c3.2-3.2,8.4-3.2,11.5,0l7.6-5.8L255.5,400z" class="st3"/>
+      <path d="M121.6,266l-13.4,13.4l-5.8-7.6c-3.2-3.2-3.2-8.4,0-11.5l5.8-7.6L121.6,266z" class="st3"/>
+      <path d="M389.5,266l13.4,13.4l5.8-7.6c3.2-3.2,3.2-8.4,0-11.5l-5.8-7.6L389.5,266z" class="st3"/>
+    </g>
+    <g>
+      <path d="M1131.3,879.7l-151-151c-7.6-7.6-7.6-19.8,0-27.4l151-151c7.6-7.6,19.8-7.6,27.4,0l151,151 c7.6,7.6,7.6,19.8,0,27.4l-151,151C1151.1,887.2,1138.9,887.2,1131.3,879.7z" class="st2"/>
+      <circle r="28.2" cy="715.5" cx="1145" class="st4"/>
+    </g>
+  </g>
+</svg>

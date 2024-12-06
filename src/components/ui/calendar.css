@@ -1,0 +1,46 @@
+/* Base styles for the calendar */
+.rdp-root {
+    --rdp-accent-color: #ff002be8; /* Tailwind's blue-500 */
+    --rdp-accent-background-color: #eff6ff; /* Tailwind's blue-100 */
+    --rdp-day-height: 44px;
+    --rdp-day-width: 44px;
+  }
+  
+  /* Specific styles for different game types */
+  .rdp-day_regular {
+    background-color: #10b981; /* Tailwind's green-500 */
+    color: #fff; /* White text */
+  }
+  
+  .rdp-day_preseason {
+    background-color: #3b82f6; /* Tailwind's blue-500 */
+    color: #fff; /* White text */
+  }
+  
+  .rdp-day_cup {
+    background-color: #a855f7; /* Tailwind's purple-500 */
+    color: #fff; /* White text */
+  }
+  
+  .rdp-day_playoff {
+    background-color: #ef4444; /* Tailwind's red-500 */
+    color: #fff; /* White text */
+  }
+  
+  /* General day styles */
+  .rdp-day:hover {
+    background-color: var(--rdp-accent-background-color);
+    color: #000;
+  }
+  
+  .rdp-day_today {
+    border: 2px solid #fde047; /* Tailwind's yellow-400 */
+    color: #000;
+  }
+  
+  .rdp-day_selected {
+    background-color: var(--rdp-accent-color);
+    color: #000;
+    border-color: var(--rdp-accent-color);
+  }
+  

@@ -4,9 +4,10 @@ from nba_api.live.nba.endpoints import ScoreBoard
 from nba_api.stats.endpoints.boxscoreadvancedv3 import BoxScoreAdvancedV3
 from datetime import timezone
 from dateutil import parser
+import requests
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Enable CORS for all endpoints
 
 @app.route('/api/today_games', methods=['GET'])
 def get_today_games():
@@ -58,6 +59,19 @@ def get_game_stats(game_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/schedule', methods=['GET'])
+def get_schedule():
+    try:
+        # Fetch the NBA schedule JSON from the official NBA endpoint
+        response = requests.get('https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json')
+        response.raise_for_status()
+        schedule_data = response.json()
+
+        # Extract and return the schedule
+        return jsonify(schedule_data)
+
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

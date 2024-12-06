@@ -11,6 +11,7 @@ interface HyperTextProps {
   framerProps?: Variants;
   className?: string;
   animateOnLoad?: boolean;
+  maskImage?: string; // New prop for mask image
 }
 
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -27,6 +28,7 @@ export default function HyperText({
   },
   className,
   animateOnLoad = true,
+  maskImage, // Destructure the maskImage prop
 }: HyperTextProps) {
   const [displayText, setDisplayText] = useState(text.split(""));
   const [trigger, setTrigger] = useState(false);
@@ -70,13 +72,22 @@ export default function HyperText({
 
   return (
     <div
-      className="relative flex justify-center items-center overflow-hidden py-2 cursor-default"
+      className={cn(
+        "relative flex justify-center items-center overflow-hidden py-2 cursor-default text-transparent bg-clip-text", // Ensures text inherits the background
+        className,
+      )}
+      style={{
+        backgroundImage: maskImage ? `url(${maskImage})` : undefined, // Single background for all text
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center -20px",
+      }}
       onMouseEnter={triggerAnimation}
     >
       {displayText.map((letter, i) => (
         <motion.h1
           key={i}
-          className={cn("font-mono", letter === " " ? "w-3" : "", className)}
+          className={cn("font-mono", letter === " " ? "w-3" : "")} // Letter-specific styles
           {...framerProps}
         >
           {letter.toUpperCase()}

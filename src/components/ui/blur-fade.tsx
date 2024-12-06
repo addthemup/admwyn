@@ -8,6 +8,7 @@ import {
   UseInViewOptions,
   Variants,
 } from "framer-motion";
+import cn from "classnames"; // Ensure this is correctly imported
 
 type MarginType = UseInViewOptions["margin"];
 
@@ -24,6 +25,7 @@ interface BlurFadeProps {
   inView?: boolean;
   inViewMargin?: MarginType;
   blur?: string;
+  maskImage?: string; // New prop for mask image
 }
 
 export default function BlurFade({
@@ -32,10 +34,11 @@ export default function BlurFade({
   variant,
   duration = 0.4,
   delay = 0,
-  yOffset = 6,
+  yOffset = 200,
   inView = false,
   inViewMargin = "-50px",
   blur = "6px",
+  maskImage, // Destructure the maskImage prop
 }: BlurFadeProps) {
   const ref = useRef(null);
   const inViewResult = useInView(ref, { once: true, margin: inViewMargin });
@@ -45,6 +48,7 @@ export default function BlurFade({
     visible: { y: -yOffset, opacity: 1, filter: `blur(0px)` },
   };
   const combinedVariants = variant || defaultVariants;
+
   return (
     <AnimatePresence>
       <motion.div
@@ -58,7 +62,17 @@ export default function BlurFade({
           duration,
           ease: "easeOut",
         }}
-        className={className}
+        className={cn(
+          "relative",
+          className,
+          maskImage ? "text-transparent bg-clip-text" : "", // Apply mask styles if maskImage exists
+        )}
+        style={{
+          backgroundImage: maskImage ? `url(${maskImage})` : undefined,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center -20px",
+        }}
       >
         {children}
       </motion.div>

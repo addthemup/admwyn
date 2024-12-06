@@ -1,6 +1,12 @@
 import React from "react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
-import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Separator } from "./ui/separator";
+import NumberTicker from "./ui/number-ticker";
+
+interface TeamStats {
+  teamTricode: string;
+  offensiveRating: number | null;
+}
 
 interface GameCardProps {
   game: {
@@ -9,35 +15,68 @@ interface GameCardProps {
     homeTeam: { teamTricode: string; wins: number; losses: number; score: number | null };
     gameEt: string;
   };
-  countdown: string;
+  countdown: string; // Time remaining until tip or "Game is starting soon!"
   apiStatus: string; // "usable", "not-usable", or "error"
+  gameStats?: {
+    TeamStats?: TeamStats[]; // Team stats from JSON
+    gameStatusText?: string;
+  };
 }
 
-const GameCard: React.FC<GameCardProps> = ({ game, countdown, apiStatus }) => {
+const GameCard: React.FC<GameCardProps> = ({ game, countdown, apiStatus, gameStats }) => {
+  const { awayTeam, homeTeam } = game;
+
+  const extractScore = (teamTricode: string): number | null => {
+    if (gameStats?.TeamStats) {
+      const teamStats = gameStats.TeamStats.find((stats) => stats.teamTricode === teamTricode);
+      return teamStats?.offensiveRating ?? null; // Return null if score is unavailable
+    }
+    return null;
+  };
+
+  const renderScore = () => {
+    const awayScore = extractScore(awayTeam.teamTricode);
+    const homeScore = extractScore(homeTeam.teamTricode);
+
+    if (awayScore !== null && homeScore !== null) {
+      return (
+        <div className="text-center">
+          <div className="flex items-center justify-center space-x-2">
+            <div className="text-xl font-bold">{awayTeam.teamTricode}:</div>
+            <NumberTicker value={awayScore} />
+          </div>
+          <Separator className="my-1" />
+          <div className="flex items-center justify-center space-x-2">
+            <div className="text-xl font-bold">{homeTeam.teamTricode}:</div>
+            <NumberTicker value={homeScore} />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="text-center text-sm">
+        {countdown}
+      </div>
+    );
+  };
+
   return (
     <Card className="border shadow-md h-48 w-30">
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <div className="text-left">
-            <div className="text-lg font-bold">{game.awayTeam.teamTricode}</div>
-            <div className="text-sm">{`${game.awayTeam.wins}-${game.awayTeam.losses}`}</div>
+            <div className="text-lg font-bold">{awayTeam.teamTricode}</div>
+            <div className="text-sm">{`${awayTeam.wins}-${awayTeam.losses}`}</div>
           </div>
+          <Separator orientation="vertical" className="h-12 mx-2" />
           <div className="text-right">
-            <div className="text-lg font-bold">{game.homeTeam.teamTricode}</div>
-            <div className="text-sm">{`${game.homeTeam.wins}-${game.homeTeam.losses}`}</div>
+            <div className="text-lg font-bold">{homeTeam.teamTricode}</div>
+            <div className="text-sm">{`${homeTeam.wins}-${homeTeam.losses}`}</div>
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="text-center text-sm">
-          Starts in: <span className="font-semibold">{countdown}</span>
-        </div>
-        {apiStatus === "usable" && <AiOutlineCheck className="text-green-500 w-6 h-6 mt-2" />}
-        {apiStatus === "not-usable" && <AiOutlineClose className="text-red-500 w-6 h-6 mt-2" />}
-      </CardContent>
-      <CardFooter className="flex justify-center">
-        {apiStatus === "usable" && <button className="btn-primary">Stats</button>}
-      </CardFooter>
+      <CardContent>{renderScore()}</CardContent>
     </Card>
   );
 };
